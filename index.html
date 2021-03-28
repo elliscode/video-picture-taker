@@ -84,7 +84,13 @@
 
     let i = 0;
 
+    let inCallback = false;
+
     function handleTouchStart(evt) {
+        if(inCallback) {
+            return;
+        }
+        inCallback = true;
         let canvas = document.getElementById('canvas');
         let settings = camera.srcObject.getTracks()[0].getSettings();
         canvas.width = settings.width;
@@ -102,6 +108,7 @@
         document.body.appendChild(tmpLink);
         tmpLink.click();
         document.body.removeChild(tmpLink);
+        inCallback = false;
         return false;
     };
 
