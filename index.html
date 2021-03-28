@@ -9,27 +9,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--<link rel="icon" type="image/png" href="../images/favicon.png" />-->
     <style>
-        #camera {
-            position: fixed;
-            bottom: 0px;
-            right: 0px;
-            width: 300px;
-            height: 300px;
+        * {
+            margin: 0;
+            padding: 0;
         }
 
-        #video {
-            position: fixed;
-            top: 0px;
+        #camera {
+            position: absolute;
+            bottom: 0px;
             left: 0px;
-            width: 100%;
-            height: 100%;
+            width: 200px;
+            height: 200px;
+            z-index: 2;
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
         }
 
         #canvas {
             display: none;
         }
 
+        #youtube {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #shutter {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 100px;
+            height: 100px;
+            z-index: 3;
+            display: none;
+        }
+
+        #shutter>img {
+            width: 100%;
+            height: 100%;
+        }
+
         body {
+            background-color: #000;
             overflow: hidden;
         }
     </style>
@@ -38,23 +63,29 @@
 <body>
     <canvas id="canvas" width=320 height=240></canvas>
     <video id="camera" muted playsinline autoplay></video>
+    <div id="shutter"><img src="photo.png?v1"></div>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5015skRvqs8?autoplay=1&playsinline=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe id="youtube" src="https://www.youtube.com/embed/5015skRvqs8?autoplay=1&playsinline=1"
+        title="YouTube video player" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
 </body>
 <script>
 
+    let i = 0;
+
     function handleTouchStart(evt) {
         let canvas = document.getElementById('canvas');
-        let capabilities = camera.srcObject.getTracks()[0].getSettings();
-        canvas.width = capabilities.width;
-        canvas.height = capabilities.height;    
+        let settings = camera.srcObject.getTracks()[0].getSettings();
+        canvas.width = settings.width;
+        canvas.height = settings.height;
         let context = canvas.getContext('2d');
         context.drawImage(camera, 0, 0, canvas.width, canvas.height);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         var dataURL = canvas.toDataURL('image/png');
         // create temporary link  
         var tmpLink = document.createElement('a');
-        tmpLink.download = 'image.png'; // set the name of the download file 
+        tmpLink.download = (new Date().toISOString().replaceAll(/[^a-z0-9]+/g, '_')) + '.png'; // set the name of the download file 
         tmpLink.href = dataURL;
 
         // temporarily add link to body and initiate the download  
@@ -64,25 +95,48 @@
         return false;
     };
 
-    function getUserMedia() {
-        const constraints = {
-            video: true,
-        };
+    function resize() {
+        let settings = camera.srcObject.getTracks()[0].getSettings();
+        let width = settings.width;
+        let height = settings.height;
+        camera.style.height = ((height / width) * 200) + 'px';
 
-        return navigator.mediaDevices.getUserMedia(constraints);
+        let screenRatio = window.innerHeight / window.innerWidth;
+        let videoRatio = 9 / 16;
+        youtube.style.height = Math.ceil((videoRatio / screenRatio) * 100) + '%';
+
+
+        window.scrollTo(0, 0);
     }
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    function init() {
 
+        if (supported) {
+            let constraints = {
+                video: {
+                    width: { ideal: 1024 },
+                    height: { ideal: 768 }
+                }
+            };
+
+            let userMedia = navigator.mediaDevices.getUserMedia(constraints);
+            userMedia.then((stream) => {
+                camera.srcObject = stream;
+                resize();
+                setInterval(resize, 100);
+                shutter.addEventListener('touchstart', handleTouchStart, { passive: false });
+                shutter.style.display = 'block';
+            });
+        }
+    }
+
+    const youtube = document.getElementById('youtube');
     const supported = 'mediaDevices' in navigator;
+    const camera = document.getElementById('camera');
+    const shutter = document.getElementById('shutter');
 
-    if (supported) {
-        const camera = document.getElementById('camera');
-        let userMedia = getUserMedia();
-        userMedia.then((stream) => {
-            camera.srcObject = stream;
-        });
-    }
+    init();
+
 </script>
 
 </html>
