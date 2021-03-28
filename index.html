@@ -42,8 +42,18 @@
             position: absolute;
             bottom: 0px;
             right: 0px;
-            width: 100px;
-            height: 100px;
+            width: 60px;
+            height: 60px;
+            z-index: 3;
+            display: none;
+        }
+
+        #edit {
+            position: absolute;
+            bottom: 70px;
+            right: 0px;
+            width: 60px;
+            height: 60px;
             z-index: 3;
             display: none;
         }
@@ -63,7 +73,8 @@
 <body>
     <canvas id="canvas" width=320 height=240></canvas>
     <video id="camera" muted playsinline autoplay></video>
-    <div id="shutter"><img src="photo.png?v1"></div>
+    <div id="shutter"><img src="photo.png?v2"></div>
+    <div id="edit"><img src="edit.png?v2"></div>
 
     <iframe id="youtube" src="https://www.youtube.com/embed/5015skRvqs8?autoplay=1&playsinline=1"
         title="YouTube video player" frameborder="0"
@@ -103,7 +114,11 @@
 
         let screenRatio = window.innerHeight / window.innerWidth;
         let videoRatio = 9 / 16;
-        youtube.style.height = Math.ceil((videoRatio / screenRatio) * 100) + '%';
+        if(videoRatio < screenRatio) {
+            youtube.style.height = Math.ceil((videoRatio / screenRatio) * 100) + '%';
+        } else {
+            youtube.style.height ='100%';
+        }
 
 
         window.scrollTo(0, 0);
@@ -114,8 +129,14 @@
         if (supported) {
             let constraints = {
                 video: {
-                    width: { ideal: 1024 },
-                    height: { ideal: 768 }
+                    optional: [
+                        { minWidth: 320 },
+                        { minWidth: 640 },
+                        { minWidth: 1024 },
+                        { minWidth: 1280 },
+                        { minWidth: 1920 },
+                        { minWidth: 2560 },
+                    ]
                 }
             };
 
@@ -126,6 +147,7 @@
                 setInterval(resize, 100);
                 shutter.addEventListener('touchstart', handleTouchStart, { passive: false });
                 shutter.style.display = 'block';
+                edit.style.display = 'block';
             });
         }
     }
@@ -134,6 +156,7 @@
     const supported = 'mediaDevices' in navigator;
     const camera = document.getElementById('camera');
     const shutter = document.getElementById('shutter');
+    const edit = document.getElementById('edit');
 
     init();
 
