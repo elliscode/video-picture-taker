@@ -130,7 +130,7 @@
         let context = canvas.getContext('2d');
         context.drawImage(camera, 0, 0, canvas.width, canvas.height);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        var dataURL = canvas.toDataURL('image/jpeg', 0.5);
+        var dataURL = canvas.toDataURL('image/jpeg', 0.9);
         // create temporary link  
         var tmpLink = document.createElement('a');
         tmpLink.download = (new Date().toISOString().replaceAll(/[^a-zA-Z0-9]+/g, '_')) + '.jpg'; // set the name of the download file 
