@@ -65,7 +65,6 @@
 
         body {
             background-color: #000;
-            overflow: hidden;
         }
     </style>
 </head>
@@ -96,7 +95,7 @@
         var dataURL = canvas.toDataURL('image/png');
         // create temporary link  
         var tmpLink = document.createElement('a');
-        tmpLink.download = (new Date().toISOString().replaceAll(/[^a-z0-9]+/g, '_')) + '.png'; // set the name of the download file 
+        tmpLink.download = (new Date().toISOString().replaceAll(/[^a-zA-Z0-9]+/g, '_')) + '.png'; // set the name of the download file 
         tmpLink.href = dataURL;
 
         // temporarily add link to body and initiate the download  
@@ -119,8 +118,6 @@
         } else {
             youtube.style.height ='100%';
         }
-
-
         window.scrollTo(0, 0);
     }
 
