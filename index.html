@@ -3,11 +3,10 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Video picture taker</title>
-    <meta name="description" content="Video Picture Taker" />
-    <meta name="author" content="ellis" />
+    <title>&#58650; Hello my Baby &#58650;</title>
+    <meta name="description" content="Plays a video while taking a picture, so you can get your baby to look at the camera" />
+    <meta name="author" content="elliscode.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--<link rel="icon" type="image/png" href="../images/favicon.png" />-->
     <style>
         * {
             margin: 0;
@@ -106,10 +105,12 @@
         <button id="cancel">Cancel</button>
     </div>
 
-    <iframe id="youtube" src="https://www.youtube.com/embed/5015skRvqs8?autoplay=1&playsinline=1"
+<iframe id="youtube" src="https://player.vimeo.com/video/531024797?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Friendly Fish"></iframe>
+
+<!--    <iframe id="youtube" src="https://www.youtube.com/embed/5015skRvqs8?autoplay=1&playsinline=1"
         title="YouTube video player" frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
+        allowfullscreen></iframe>-->
 </body>
 <script>
 
@@ -178,7 +179,7 @@
                 setInterval(resize, 100);
                 shutter.addEventListener('touchstart', handleTouchStart, { passive: false });
                 shutter.style.display = 'block';
-                edit.style.display = 'block';
+                //edit.style.display = 'block';
                 edit.addEventListener('touchstart', editCallback, { passive: false });
                 cancelButton.addEventListener('click', cancelCallback, { passive: false });
                 okButton.addEventListener('click', okCallback, { passive: false });
